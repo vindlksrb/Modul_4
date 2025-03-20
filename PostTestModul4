@@ -1,0 +1,135 @@
+// Nama : Calvin Sahat Tua Dolok Saribu
+// Nim : 105223022
+// PostTest modul 4
+
+class Mobil // Kelas Mobil
+{
+    private String nomorPlat;
+    private String merek;
+    private double hargaSewaPerHari;
+    private boolean tersedia;
+    
+    public Mobil() // Konstruktor default
+    {
+        this.nomorPlat = "";
+        this.merek = "";
+        this.hargaSewaPerHari = 0.0;
+        this.tersedia = true;
+    }
+    
+    public Mobil(String nomorPlat, String merek, double hargaSewaPerHari) // Konstruktor dengan parameter 
+    {
+        this.nomorPlat = nomorPlat;
+        this.merek = merek;
+        this.hargaSewaPerHari = hargaSewaPerHari;
+        this.tersedia = true;
+    }
+    
+    public void tampilkanInfo() 
+    {
+        System.out.println("Mobil: " + merek + " (" + nomorPlat + ") - Rp" + hargaSewaPerHari + "/hari, " + (tersedia ? "Tersedia" : "Tidak tersedia"));
+    }
+    
+    public void ubahStatus(boolean status) 
+    {
+        this.tersedia = status;
+    }
+    
+    public boolean isTersedia() 
+    {
+        return tersedia;
+    }
+    
+    public double getHargaSewaPerHari() 
+    {
+        return hargaSewaPerHari;
+    }
+}
+
+class Pelanggan // Kelas Pelanggan
+{
+    private String nama;
+    private String nomorKTP;
+    private String nomorHP;
+    
+    public Pelanggan(String nama, String nomorKTP, String nomorHP) 
+    {
+        this.nama = nama;
+        this.nomorKTP = nomorKTP;
+        this.nomorHP = nomorHP;
+    }
+    
+    public void tampilkanInfo() 
+    {
+        System.out.println("Pelanggan: " + nama + " (KTP: " + nomorKTP + ", HP: " + nomorHP + ")");
+    }
+}
+
+class Sewa // Kelas Sewa
+{
+    private Pelanggan pelanggan;
+    private Mobil mobil;
+    private int lamaSewa;
+    private double totalBiaya;
+    
+    public Sewa(Pelanggan pelanggan, Mobil mobil, int lamaSewa) 
+    {
+        if (!mobil.isTersedia()) 
+        {
+            System.out.println("Mobil tidak tersedia untuk disewa!");
+            return;
+        }
+        
+        this.pelanggan = pelanggan;
+        this.mobil = mobil;
+        this.lamaSewa = lamaSewa;
+        this.totalBiaya = lamaSewa * mobil.getHargaSewaPerHari();
+        
+        this.totalBiaya = Utility.hitungDiskon(lamaSewa, totalBiaya); // Menghitung diskon
+        
+        mobil.ubahStatus(false); // memperbarui status mobil
+    }
+    
+    public void tampilkanStruk() 
+    {
+        System.out.println("==== Struk Penyewaan ====");
+        pelanggan.tampilkanInfo();
+        mobil.tampilkanInfo();
+        System.out.println("Lama Sewa: " + lamaSewa + " hari");
+        System.out.println("Total Biaya: " + Utility.formatMataUang(totalBiaya));
+    }
+}
+
+class Utility // Kelas Utility
+{
+    public static double hitungDiskon(int lamaSewa, double totalBiaya) 
+    {
+        if (lamaSewa < 5) 
+        {
+            return totalBiaya * 0.9; // Diskon 10%
+        }
+        return totalBiaya;
+    }
+    
+    public static String formatMataUang(double jumlah) 
+    {
+        return String.format("Rp%,.2f", jumlah);
+    }
+}
+
+public class Main 
+{
+    public static void main(String[] args) 
+    {
+        Mobil mobil1 = new Mobil("B 1234 CD", "Toyota Avanza", 300000); // Membuat daftar mobil
+        Mobil mobil2 = new Mobil("D 5678 EF", "Honda Jazz", 350000);
+        
+        Pelanggan pelanggan1 = new Pelanggan("Andi", "123456789", "08123456789"); // Membuat pelanggan
+        
+        mobil1.tampilkanInfo();  // Menampilkan daftar mobil
+        mobil2.tampilkanInfo();
+        
+        Sewa sewa1 = new Sewa(pelanggan1, mobil1, 4); // Melakukan transaksi penyewaan
+        sewa1.tampilkanStruk();
+    }
+}
